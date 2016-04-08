@@ -1,0 +1,39 @@
+body{
+	background: #0000ff;
+}
+
+#hug{
+	width: 900px;
+	height: 800px;
+}
+#title{
+	width: 900px;
+	height: 150px;
+	float: top;	
+	text-align: center;
+	font-family: "snakeText";
+}
+.box{
+	margin-left: auto;
+	margin-right:auto;
+	border: 1px solid yellow;
+	color: yellow;
+	font-family: "snakeText", "Arial", sans-serif;
+}
+h1{
+	font-family: "snakeText", "Arial", sans-serif;
+}
+#score{
+	float:right;
+	height:100%;
+	width:400px;
+	float:bottom;
+	font-size:25px;
+}
+#instructions{
+	float: bottom;
+}
+@font-face{
+	font-family: "snakeText";
+	src: url(font/data-latin.ttf);
+}

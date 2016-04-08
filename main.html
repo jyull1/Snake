@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>JavaScript Canvas Template</title>
+	<link href="style/style.css" type="text/css" rel="stylesheet">
+	<script src="js/modernizr.js"></script>
+	<script>
+	//Check if the page has fully loaded, and execute the eventWindowLoaded function when it has
+	window.addEventListener("load",eventWindowLoaded, false);
+	
+	//The eventWindowLoaded() function, which calls the canvasapp() function when it is executed
+	function eventWindowLoaded() {
+		canvasApp();	
+	}
+	
+	//Function to check for Canvas Support using modernizr.js
+	function canvasSupport() {
+		return Modernizr.canvas;	
+	}
+	
+	//The canvasApp() function where our canvas code will go
+	function canvasApp() {
+		
+		//Check to see if the canvas has a context (the drawing surface defined by the web browser to support canvas functionality)
+		if (!canvasSupport()) {
+			return;	
+		}
+		
+		//Reference for the canvas object
+		var theCanvas = document.getElementById("canvasOne");
+				
+		//get the context
+		var context = theCanvas.getContext("2d");
+		var score = 0;
+		var direction = "none";
+		var grid = 25;
+		var yPos = getRandom(0, 800 / grid) * grid;
+		var xPos = getRandom(0, 900 / grid) * grid;
+		var x = 0;
+		var y = 200;
+		var imgData;
+		var appleData = context.getImageData(xPos,yPos,grid,grid);
+		var timer = 75;
+		var snakeTimer = timer * 3;
+		var gameOver = false;
+		window.addEventListener("keydown", eventKeyPressed, true);
+		window.addEventListener();
+		
+		//The game loop function
+		function gameLoop(){
+			if(gameOver == false){
+				window.setTimeout(gameLoop, timer);
+				drawCanvas();
+			}
+			else{
+				alert("Game Over! Press OK to start again!");
+				window.location.reload();
+			}
+		}
+
+		function getRandom(small, large){
+			var rand = Math.random();
+
+			rand *= (large - small);
+			rand += small;
+			rand = Math.floor(rand);
+
+			return rand;
+		}
+
+		function tailCutter(pointx, pointy){
+			setTimeout(function(){context.clearRect(pointx,pointy,grid,grid)}, snakeTimer);
+		}
+
+		function drawApple(){
+
+			context.fillStyle = "#ffff00";
+			while(appleData.data[0] == 255){
+				yPos = getRandom(0, 800 / grid) * grid;
+				xPos = getRandom(0, 900 / grid) * grid;
+				appleData = context.getImageData(xPos,yPos,grid,grid);
+			}
+			context.fillRect(xPos, yPos, grid, grid);
+			context.fillStyle = "rgb(255,0,0)";
+		}
+
+		function eventKeyPressed(e) {
+			var keyPressed = (e.keyCode);
+
+			if(keyPressed == 37 && direction != "right"){
+				direction = "left";
+			}
+			if(keyPressed == 38 && direction != "up"){
+				direction = "down";
+			}
+			if(keyPressed == 39 && direction != "left"){
+				direction = "right";
+			}
+			if(keyPressed == 40 && direction !="down"){
+				direction = "up";
+			}
+		}
+
+		//The draw stuff function
+		function drawCanvas(){
+
+			context.fillStyle = "rgb(255,0,0)";
+			if(direction != "none"){
+				tailCutter(x,y);
+			}		
+
+			if(y == yPos && x == xPos){
+				yPos = getRandom(0, 800 / grid) * grid;
+				xPos = getRandom(0, 900 / grid) * grid;
+				snakeTimer += timer;
+				score++;
+			}
+			if(direction == "none"){
+				context.fillRect(x,y,grid,grid);
+			}
+			if(direction == "left"){
+				x -= grid;
+				if (x < 0){
+					x = 0;
+					gameOver = true;
+				}
+				imgData = context.getImageData(x,y,grid,grid);
+			}
+			if(direction == "up"){
+				y += grid;
+				if (y >= 800){
+					y = 800 - grid;
+					gameOver = true;
+				}
+				imgData = context.getImageData(x,y,grid,grid);
+			}
+			if(direction == "right"){
+				x += grid;
+				if (x >= 900){
+					x = 900 - grid;
+					gameOver = true;
+				}
+				imgData = context.getImageData(x,y,grid,grid);
+			}
+			if(direction == "down"){
+				y -= grid;
+				if (y < 0){
+					y = 0;
+					gameOver = true;
+				}
+				imgData = context.getImageData(x,y,grid,grid);
+			}
+			drawApple();
+			if(imgData.data[0] == 255 && imgData.data[1] == 0){
+				gameOver = true;
+			}
+			context.fillRect(x,y,grid,grid);
+			document.getElementById("score").innerHTML = "Score: " + score * 10;
+		}
+		gameLoop();
+	}
+	
+	</script>
+</head>
+
+<body>
+		<div id="score" class="box">Score: 0</div>
+        <div id="title" class="box"><br/><br/><h1>The Snake Game</h1></div>
+        <div id="hug" class="box">
+        <canvas id="canvasOne" width="900" height="800">
+            Your browser doesn't support Canvas.
+        </canvas>    
+        </div>
+        <!-- ^ End Canvas -->
+        
+</body>
+</html>
+
